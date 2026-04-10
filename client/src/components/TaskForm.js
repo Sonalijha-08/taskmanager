@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { PlusCircle, Save, X, ClipboardList, Type, AlignLeft, Calendar, Layout } from 'lucide-react';
 
 function TaskForm({ onSubmit, initialData, onCancel }) {
   const [formData, setFormData] = useState({
@@ -32,120 +33,96 @@ function TaskForm({ onSubmit, initialData, onCancel }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
+    setFormData({
+      ...formData,
       [name]: value
-    }));
+    });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!formData.title || formData.title.trim() === '') {
-      setFormError('Title is required');
-      return;
-    }
-
-    if (formData.title.trim().length > 100) {
-      setFormError('Title cannot exceed 100 characters');
-      return;
-    }
-
-    if (formData.description && formData.description.trim().length > 500) {
-      setFormError('Description cannot exceed 500 characters');
-      return;
-    }
-
-    if (formData.category && formData.category.trim().length > 50) {
-      setFormError('Category cannot exceed 50 characters');
-      return;
-    }
-
-    setFormError(null);
-
-    const submitData = {
-      ...formData,
-      dueDate: formData.dueDate ? new Date(formData.dueDate) : null
-    };
-
-    onSubmit(submitData);
-
+    onSubmit(formData);
     if (!initialData) {
-      setFormData({
-        title: '',
-        description: '',
-        dueDate: '',
-        category: ''
-      });
+      setFormData({ title: '', description: '', dueDate: '', category: '' });
     }
   };
 
   return (
     <div className="task-form-container">
-      <h2>{initialData ? 'Edit Task' : 'Add New Task'}</h2>
+      <h2>
+        <ClipboardList className="accent-icon" /> 
+        {initialData ? 'Edit Task' : 'Create New Task'}
+      </h2>
       <form onSubmit={handleSubmit} className="task-form">
-        <div className="form-group">
-          <label htmlFor="title">Title *</label>
+        <div className="form-group full-width">
+          <label htmlFor="title">
+            <Type size={12} style={{ marginRight: '4px' }} /> Title
+          </label>
           <input
             type="text"
             id="title"
             name="title"
             value={formData.title}
             onChange={handleChange}
+            placeholder="What needs to be done?"
             required
             maxLength="100"
-            placeholder="Enter task title"
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="description">Description</label>
+        <div className="form-group full-width">
+          <label htmlFor="description">
+            <AlignLeft size={12} style={{ marginRight: '4px' }} /> Description
+          </label>
           <textarea
             id="description"
             name="description"
             value={formData.description}
             onChange={handleChange}
-            maxLength="500"
-            placeholder="Enter task description"
+            placeholder="Add some details..."
             rows="3"
-          />
+            maxLength="500"
+          ></textarea>
         </div>
 
         <div className="form-group">
-          <label htmlFor="dueDate">Due Date</label>
+          <label htmlFor="dueDate">
+            <Calendar size={12} style={{ marginRight: '4px' }} /> Due Date
+          </label>
           <input
             type="date"
             id="dueDate"
             name="dueDate"
             value={formData.dueDate}
             onChange={handleChange}
-            min={new Date().toISOString().split('T')[0]}
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="category">Category</label>
+          <label htmlFor="category">
+            <Layout size={12} style={{ marginRight: '4px' }} /> Category
+          </label>
           <input
             type="text"
             id="category"
             name="category"
             value={formData.category}
             onChange={handleChange}
+            placeholder="e.g. Work, Personal"
             maxLength="50"
-            placeholder="Enter category (e.g., Work, Personal)"
           />
         </div>
 
-        {formError && <div className="error-message" style={{ marginBottom: '1rem' }}>{formError}</div>}
         <div className="form-actions">
-          <button type="submit" className="btn btn-primary">
-            {initialData ? 'Update Task' : 'Add Task'}
-          </button>
           {initialData && (
             <button type="button" onClick={onCancel} className="btn btn-secondary">
-              Cancel
+              <X size={18} /> Cancel
             </button>
           )}
+          <button type="submit" className="btn btn-primary">
+            {initialData ? <Save size={18} /> : <PlusCircle size={18} />}
+            {initialData ? 'Update Task' : 'Add Task'}
+          </button>
         </div>
       </form>
     </div>

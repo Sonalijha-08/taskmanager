@@ -1,4 +1,5 @@
 import React from 'react';
+import { CheckCircle, Calendar, Tag, Trash2, Edit2, Clock } from 'lucide-react';
 
 function TaskItem({ task, onEdit, onDelete, onToggleComplete }) {
   const formatDate = (dateString) => {
@@ -11,7 +12,7 @@ function TaskItem({ task, onEdit, onDelete, onToggleComplete }) {
     });
   };
 
-  const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && !task.completed;
+  const isOverdue = task.dueDate && new Date(task.dueDate) < new Date().setHours(0, 0, 0, 0) && !task.completed;
 
   return (
     <div className={`task-item ${task.completed ? 'completed' : ''} ${isOverdue ? 'overdue' : ''}`}>
@@ -19,14 +20,18 @@ function TaskItem({ task, onEdit, onDelete, onToggleComplete }) {
         <h3 className="task-title">{task.title}</h3>
         {task.description && <p className="task-description">{task.description}</p>}
         <div className="task-meta">
-          {task.category && <span className="task-category">{task.category}</span>}
+          {task.category && (
+            <span className="task-category">
+              <Tag size={12} /> {task.category}
+            </span>
+          )}
           {task.dueDate && (
             <span className={`task-due-date ${isOverdue ? 'overdue' : ''}`}>
-              Due: {formatDate(task.dueDate)}
+              <Calendar size={12} /> Due: {formatDate(task.dueDate)}
             </span>
           )}
           <span className="task-created">
-            Created: {formatDate(task.createdAt)}
+            <Clock size={12} /> {formatDate(task.createdAt)}
           </span>
         </div>
       </div>
@@ -35,25 +40,25 @@ function TaskItem({ task, onEdit, onDelete, onToggleComplete }) {
         {!task.completed && (
           <button
             onClick={() => onToggleComplete(task._id)}
-            className="btn btn-success"
+            className="btn btn-success btn-icon"
             title="Mark as completed"
           >
-            ✓ Complete
+            <CheckCircle size={18} />
           </button>
         )}
         <button
           onClick={() => onEdit(task)}
-          className="btn btn-secondary"
+          className="btn btn-secondary btn-icon"
           title="Edit task"
         >
-          ✏️ Edit
+          <Edit2 size={18} />
         </button>
         <button
           onClick={() => onDelete(task._id)}
-          className="btn btn-danger"
+          className="btn btn-danger btn-icon"
           title="Delete task"
         >
-          🗑️ Delete
+          <Trash2 size={18} />
         </button>
       </div>
     </div>
